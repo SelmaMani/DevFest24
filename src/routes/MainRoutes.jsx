@@ -3,6 +3,8 @@ import { lazy } from 'react';
 // project imports
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
+import MinimalLayout from 'layout/MinimalLayout';
+
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard')));
@@ -11,6 +13,8 @@ const DashboardDefault = Loadable(lazy(() => import('views/dashboard')));
 const ExpenseTracking = Loadable(lazy(() => import('views/utilities/Expense-Tracking')));
 const FinancialReporting = Loadable(lazy(() => import('views/utilities/Financial-Reporting')));
 const InsghitsRecommendations = Loadable(lazy(() => import('views/utilities/Insghits-Recommendations')));
+const BalanceSheet = Loadable(lazy(() => import('views/utilities/reports/BalanceSheet')));
+const IncomeStatement = Loadable(lazy(() => import('views/utilities/reports/IncomeStatement')));
 // const UtilsMaterialIcons = Loadable(lazy(() => import('views/utilities/MaterialIcons')));
 // const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/TablerIcons')));
 
@@ -47,10 +51,15 @@ const MainRoutes = {
     },
     {
       path: 'tracking',
+      element: <MinimalLayout />,
       children: [
         {
-          path: 'financial-reporting',
-          element: <FinancialReporting />
+          path: 'balance-sheet', 
+          element: <BalanceSheet />
+        },
+        {
+          path: 'income-statement', 
+          element: <IncomeStatement />
         }
       ]
     },

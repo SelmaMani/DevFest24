@@ -30,10 +30,23 @@ const utilities = {
     {
       id: 'financial-reporting',
       title: 'Financial Reporting',
-      type: 'item',
-      url: '/tracking/financial-reporting',
+      type: 'collapse',
       icon: icons.IconReportMoney,
-      breadcrumbs: false
+      children: [
+        {
+          id: 'balance-sheet',
+          title: 'balance-sheet',
+          type: 'item',
+          url: '/tracking/balance-sheet',
+          
+        },
+        {
+          id: 'income-statement',
+          title: 'income-statement',
+          type: 'item',
+          url: '/tracking/income-statement',
+        }
+      ]
     },
     {
       id: 'insights-recommendations',
