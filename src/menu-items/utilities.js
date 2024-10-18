@@ -23,7 +23,7 @@ const utilities = {
       id: 'expense-tracking',
       title: 'Expense Tracking',
       type: 'item',
-      url: '/utils/util-typography',
+      url: '/tracking/expense-tracking',
       icon: icons.IconChartHistogram,
       breadcrumbs: false
     },
@@ -31,7 +31,7 @@ const utilities = {
       id: 'financial-reporting',
       title: 'Financial Reporting',
       type: 'item',
-      url: '/utils/util-color',
+      url: '/tracking/financial-reporting',
       icon: icons.IconReportMoney,
       breadcrumbs: false
     },
@@ -39,7 +39,7 @@ const utilities = {
       id: 'insights-recommendations',
       title: 'Insights & Recommendations',
       type: 'item',
-      url: '/utils/util-shadow',
+      url: '/tracking/insghits-recommendations',
       icon: icons.IconHomeStats,
       breadcrumbs: false
     }
