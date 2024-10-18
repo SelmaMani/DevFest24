@@ -3,14 +3,18 @@ import { lazy } from 'react';
 // project imports
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
+import MinimalLayout from 'layout/MinimalLayout';
+
 
 // dashboard routing
 const DashboardDefault = Loadable(lazy(() => import('views/dashboard')));
 
 // utilities routing
-const UtilsTypography = Loadable(lazy(() => import('views/utilities/Expense-Tracking')));
-const UtilsColor = Loadable(lazy(() => import('views/utilities/Financial-Reporting')));
-const UtilsShadow = Loadable(lazy(() => import('views/utilities/Insghits-Recommendations')));
+const ExpenseTracking = Loadable(lazy(() => import('views/utilities/Expense-Tracking')));
+const FinancialReporting = Loadable(lazy(() => import('views/utilities/Financial-Reporting')));
+const InsghitsRecommendations = Loadable(lazy(() => import('views/utilities/Insghits-Recommendations')));
+const BalanceSheet = Loadable(lazy(() => import('views/utilities/reports/BalanceSheet')));
+const IncomeStatement = Loadable(lazy(() => import('views/utilities/reports/IncomeStatement')));
 // const UtilsMaterialIcons = Loadable(lazy(() => import('views/utilities/MaterialIcons')));
 // const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/TablerIcons')));
 
@@ -37,29 +41,34 @@ const MainRoutes = {
       ]
     },
     {
-      path: 'utils',
+      path: 'tracking',
       children: [
         {
-          path: 'util-typography',
-          element: <UtilsTypography />
+          path: 'expense-tracking',
+          element: <ExpenseTracking />
         }
       ]
     },
     {
-      path: 'utils',
+      path: 'tracking',
+      element: <MinimalLayout />,
       children: [
         {
-          path: 'util-color',
-          element: <UtilsColor />
+          path: 'balance-sheet', 
+          element: <BalanceSheet />
+        },
+        {
+          path: 'income-statement', 
+          element: <IncomeStatement />
         }
       ]
     },
     {
-      path: 'utils',
+      path: 'tracking',
       children: [
         {
-          path: 'util-shadow',
-          element: <UtilsShadow />
+          path: 'insghits-recommendations',
+          element: <InsghitsRecommendations />
         }
       ]
     },
