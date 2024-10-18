@@ -23,23 +23,36 @@ const utilities = {
       id: 'expense-tracking',
       title: 'Expense Tracking',
       type: 'item',
-      url: '/utils/util-typography',
+      url: '/tracking/expense-tracking',
       icon: icons.IconChartHistogram,
       breadcrumbs: false
     },
     {
       id: 'financial-reporting',
       title: 'Financial Reporting',
-      type: 'item',
-      url: '/utils/util-color',
+      type: 'collapse',
       icon: icons.IconReportMoney,
-      breadcrumbs: false
+      children: [
+        {
+          id: 'balance-sheet',
+          title: 'balance-sheet',
+          type: 'item',
+          url: '/tracking/balance-sheet',
+          
+        },
+        {
+          id: 'income-statement',
+          title: 'income-statement',
+          type: 'item',
+          url: '/tracking/income-statement',
+        }
+      ]
     },
     {
       id: 'insights-recommendations',
       title: 'Insights & Recommendations',
       type: 'item',
-      url: '/utils/util-shadow',
+      url: '/tracking/insghits-recommendations',
       icon: icons.IconHomeStats,
       breadcrumbs: false
     }
