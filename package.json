@@ -19,6 +19,7 @@
     "@fontsource/inter": "^5.0.16",
     "@fontsource/poppins": "^5.0.8",
     "@fontsource/roboto": "^5.0.8",
+    "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/free-brands-svg-icons": "^6.6.0",
     "@fortawesome/free-regular-svg-icons": "^6.6.0",
     "@fortawesome/free-solid-svg-icons": "^6.6.0",
