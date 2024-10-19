@@ -4,6 +4,7 @@ import { lazy } from 'react';
 import MainLayout from 'layout/MainLayout';
 import Loadable from 'ui-component/Loadable';
 import MinimalLayout from 'layout/MinimalLayout';
+import LandingPage from 'views/landing/LandingPage';
 
 
 // dashboard routing
@@ -25,11 +26,11 @@ const SamplePage = Loadable(lazy(() => import('views/sample-page')));
 
 const MainRoutes = {
   path: '/',
-  element: <MainLayout />,
+  element: <LandingPage />,
   children: [
     {
       path: '/',
-      element: <DashboardDefault />
+      element: <LandingPage />
     },
     {
       path: 'dashboard',
