@@ -9,6 +9,10 @@ import jsconfigPaths from 'vite-jsconfig-paths';
 export default defineConfig({
   plugins: [react(), jsconfigPaths()],
   // https://github.com/jpuri/react-draft-wysiwyg/issues/1317
+   build: {
+    outDir: 'dist', // Ensure this matches your output directory
+    assetsDir: 'assets' // This is the directory for assets
+  },
   base: '/free/',
   define: {
     global: 'window'
