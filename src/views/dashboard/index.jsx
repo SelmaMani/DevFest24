@@ -19,6 +19,7 @@ import { gridSpacing } from 'store/constant';
 import StorefrontTwoToneIcon from '@mui/icons-material/StorefrontTwoTone';
 import InputDataDialog from 'ui-component/input-data-dialog';
 import UploadDropdown from 'ui-component/add-data-dropdown';
+import WelcomeDialog from 'ui-component/welcome-dialog';
 
 // ==============================|| DEFAULT DASHBOARD ||============================== //
 
@@ -32,6 +33,7 @@ const Dashboard = () => {
   return (
     <Grid container spacing={gridSpacing}>
        <Grid item xs={12}>
+       {/* <WelcomeDialog></WelcomeDialog> */}
         <Box display="flex" justifyContent="flex-end" alignItems="center" mb={2}>
           <UploadDropdown />
         </Box>

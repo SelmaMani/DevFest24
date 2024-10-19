@@ -85,7 +85,7 @@ const Customization = () => {
         newFont = `'Roboto', sans-serif`;
         break;
     }
-    dispatch({ type: SET_FONT_FAMILY, fontFamily: newFont });
+    dispatch({ type: SET_FONT_FAMILY, fontFamily: `'Poppins', sans-serif` });
   }, [dispatch, fontFamily]);
 
   return (

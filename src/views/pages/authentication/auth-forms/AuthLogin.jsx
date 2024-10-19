@@ -53,7 +53,7 @@ const AuthLogin = ({ ...others }) => {
         try {
             const { error } = await supabase.auth.signInWithPassword({ email, password });
             if (error) throw error;
-            navigate('/');
+            navigate('/dashboard');
         } catch (error) {
             setErrors({ submit: error.message });
         } finally {
@@ -141,7 +141,7 @@ const AuthLogin = ({ ...others }) => {
                                 }
                                 label="Remember me"
                             />
-                            <Typography variant="subtitle1" color="secondary" sx={{ textDecoration: 'none', cursor: 'pointer' }}>
+                            <Typography variant="subtitle1" color="primary.main" sx={{ textDecoration: 'none', cursor: 'pointer' }}>
                                 Forgot Password?
                             </Typography>
                         </Stack>
@@ -160,7 +160,7 @@ const AuthLogin = ({ ...others }) => {
                                     size="large"
                                     type="submit"
                                     variant="contained"
-                                    color="secondary"
+                                    className='bg-[#1e88e5]'
                                 >
                                     Sign in
                                 </Button>
