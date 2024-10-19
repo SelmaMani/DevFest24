@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 
 // material-ui
 import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+
 
 // project imports
 import EarningCard from './EarningCard';
@@ -15,6 +17,8 @@ import { gridSpacing } from 'store/constant';
 
 // assets
 import StorefrontTwoToneIcon from '@mui/icons-material/StorefrontTwoTone';
+import InputDataDialog from 'ui-component/input-data-dialog';
+import UploadDropdown from 'ui-component/add-data-dropdown';
 
 // ==============================|| DEFAULT DASHBOARD ||============================== //
 
@@ -27,6 +31,11 @@ const Dashboard = () => {
 
   return (
     <Grid container spacing={gridSpacing}>
+       <Grid item xs={12}>
+        <Box display="flex" justifyContent="flex-end" alignItems="center" mb={2}>
+          <UploadDropdown />
+        </Box>
+      </Grid>
       <Grid item xs={12}>
         <Grid container spacing={gridSpacing}>
           <Grid item lg={4} md={6} sm={6} xs={12}>

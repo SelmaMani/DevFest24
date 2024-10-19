@@ -17,6 +17,10 @@ const BalanceSheet = Loadable(lazy(() => import('views/utilities/reports/Balance
 const IncomeStatement = Loadable(lazy(() => import('views/utilities/reports/IncomeStatement')));
 // const UtilsMaterialIcons = Loadable(lazy(() => import('views/utilities/MaterialIcons')));
 // const UtilsTablerIcons = Loadable(lazy(() => import('views/utilities/TablerIcons')));
+const SalesData = Loadable(lazy(() => import('views/data-pages/sales')));
+const ExpenseData = Loadable(lazy(() => import('views/data-pages/expense')));
+const InvestmentData = Loadable(lazy(() => import('views/data-pages/investment')));
+const BudgetData = Loadable(lazy(() => import('views/data-pages/budget')));
 
 // sample page routing
 const SamplePage = Loadable(lazy(() => import('views/sample-page')));
@@ -72,15 +76,28 @@ const MainRoutes = {
         }
       ]
     },
-    // {
-    //   path: 'icons',
-    //   children: [
-    //     {
-    //       path: 'tabler-icons',
-    //       element: <UtilsTablerIcons />
-    //     }
-    //   ]
-    // },
+    {
+      path: 'data',
+      element: <MinimalLayout />,
+      children: [
+        {
+          path: 'sales-data', 
+          element: <SalesData />
+        },
+        {
+          path: 'budget-data', 
+          element: <BudgetData />
+        },
+        {
+          path: 'investment-data', 
+          element: <InvestmentData />
+        },
+        {
+          path: 'expenses-data', 
+          element: <ExpenseData />
+        }
+      ]
+    },
     // {
     //   path: 'icons',
     //   children: [
