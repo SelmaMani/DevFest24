@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { TextField, Button, Typography, Box, Grid } from '@mui/material';
+import ExportComponent from 'utils/ExportComponent';
+import { data } from 'autoprefixer';
 
 function BalanceSheet() {
   const [cash, setCash] = useState('');
@@ -16,6 +18,10 @@ function BalanceSheet() {
   const [otherEquity, setOtherEquity] = useState('');
 
   const [result, setResult] = useState('');
+  const [insights, setInsights] = useState("");
+
+  const [exportData, setExportData] = useState([]);
+
 
   const calculateTotalAssets = () => {
     return (
@@ -42,12 +48,76 @@ function BalanceSheet() {
     );
   };
 
+  var totalAssets = 0;
+  var totalLiabilities = 0;
+  var totalEquity = 0;
+  var total = 0;
+
   const calculateBalanceSheet = () => {
-    const totalAssets = calculateTotalAssets();
-    const totalLiabilities = calculateTotalLiabilities();
-    const totalEquity = calculateTotalEquity();
-    const total = totalAssets - (totalLiabilities + totalEquity);
-    setResult(total ? `Net Balance: $${total}` : '');
+    
+     totalAssets = calculateTotalAssets();
+     totalLiabilities = calculateTotalLiabilities();
+     totalEquity = calculateTotalEquity();
+     total = totalAssets - (totalLiabilities + totalEquity);
+    setResult(`Net Balance: $${total}`);
+
+    // Create the data object dynamically from input values
+    const data = {
+      balance_sheet_data: {
+        assets: {
+          cash: parseFloat(cash || 0),
+          accounts_receivable: parseFloat(accountsReceivable || 0),
+          inventory: parseFloat(inventory || 0),
+          other_assets: parseFloat(otherAssets || 0),
+          total_assets: totalAssets  // Calculated total assets
+        },
+        liabilities: {
+          short_term_debt: parseFloat(shortTermLiabilities || 0),
+          long_term_debt: parseFloat(longTermLiabilities || 0),
+          other_liabilities: parseFloat(otherLiabilities || 0),
+          total_liabilities: totalLiabilities  // Calculated total liabilities
+        },
+        equity: {
+          owners_equity: parseFloat(ownersEquity || 0),
+          retained_earnings: parseFloat(retainedEarnings || 0),
+          other_equity: parseFloat(otherEquity || 0),
+          total_equity: totalEquity  // Calculated total equity
+        },
+        result: total  // Final net balance
+      },
+      query: "Analyze the balance sheet result and provide insights on asset-to-debt ratio."
+    };
+
+    fetchInsights(data);
+    const exportData = [
+      { Category: 'Assets', Value: totalAssets },
+      { Category: 'Liabilities', Value: totalLiabilities },
+      { Category: 'Equity', Value: totalEquity },
+      { Category: 'Net Balance', Value: total },
+    ];
+    console.log(exportData);
+    setExportData(exportData);
+
+  };
+
+  const fetchInsights = (data) => {
+    fetch('http://127.0.0.1/generate_insights', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),  // Send data from the inputs in the request body
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log('Insights:', data.insights);
+
+        // Update state with received insights
+        setInsights(data.insights);
+      })
+      .catch((error) => {
+        console.error('Error:', error);
+      });
   };
 
   return (
@@ -228,22 +298,28 @@ function BalanceSheet() {
 
       {/* Export Button */}
       <Box mt={3}>
-        <Button variant="outlined" color="secondary" onClick={() => {}}>
-          Export Result
-        </Button>
+        <ExportComponent data={ exportData } fileName={"BalanceSheetData"} />
       </Box>
 
+
       {/* Notes Section */}
-      <Box mt={3}>
-        <Typography variant="h6">Notes</Typography>
-        <TextField
-          fullWidth
-          multiline
-          rows={4}
-          variant="outlined"
-          placeholder="Add any relevant notes here"
-        />
+        <div>
+        <br />
+        <Typography variant="h4">Notes : </Typography>
+       
+          <Box
+          p={2}
+          border={1}
+          borderColor="grey.600"
+          borderRadius={1}
+          bgcolor="grey.200"
+          sx={{ whiteSpace: 'pre-line' }}
+        >
+        <Typography variant="body1">
+          {insights ? insights : "No insights available yet."}
+        </Typography>
       </Box>
+        </div>
     </Box>
   );
 }
