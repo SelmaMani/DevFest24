@@ -4,7 +4,7 @@ import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 
 function CallToAction() {
   return (
-      <div className="w-[85%] flex flex-col  py-[20px] md:py-[100px] justify-center items-center border border-gray-400 rounded-[30px] gap-[40px]">
+      <div className="w-[85%] m-6 flex flex-col  py-[20px] md:py-[100px] justify-center items-center border border-gray-400 rounded-[30px] gap-[40px]">
             <h1 className="text-black text-[24px] md:text-[36px] md:text-[42px] text-center md:text-right leading-[2rem] ">
                 Ready to take Optifin for a spin?
             </h1>
