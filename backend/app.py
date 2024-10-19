@@ -2,11 +2,11 @@ import requests
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import groq  
-from generation import generate_balance_sheet_insights , generate_income_statement_insights
+from generation import generate_balance_sheet_insights , generate_income_statement_insights , generate_dashboard_report
 
 
 app = Flask(__name__)
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
 groq_client = groq.Client(api_key="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")
 
@@ -22,6 +22,22 @@ def generate_insights():
 
     result = {
         "balance_sheet": balance_sheet_data,
+        "insights": insights
+    }
+
+    return jsonify(result)
+
+@app.route('/dashboard_report', methods=['POST'])
+def dashboard_report():
+    data = request.json.get('data')
+    query = request.json.get('query', "Please analyze this balance sheet and provide insights.")  
+    print(data)
+    data = [f"data: { data }"]
+
+    insights = generate_dashboard_report(query, data, groq_client)
+
+    result = {
+        "data": data,
         "insights": insights
     }
 

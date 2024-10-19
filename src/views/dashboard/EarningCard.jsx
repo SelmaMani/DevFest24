@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -22,13 +22,14 @@ import GetAppTwoToneIcon from '@mui/icons-material/GetAppOutlined';
 import FileCopyTwoToneIcon from '@mui/icons-material/FileCopyOutlined';
 import PictureAsPdfTwoToneIcon from '@mui/icons-material/PictureAsPdfOutlined';
 import ArchiveTwoToneIcon from '@mui/icons-material/ArchiveOutlined';
+import { supabase } from '../../../supabaseClient'; // Ensure you have the supabaseClient imported
 
 // ===========================|| DASHBOARD DEFAULT - EARNING CARD ||=========================== //
 
 const EarningCard = ({ isLoading }) => {
   const theme = useTheme();
-
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [totalEarnings, setTotalEarnings] = useState(0); // State for total earnings
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -37,6 +38,32 @@ const EarningCard = ({ isLoading }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+
+  useEffect(() => {
+    const fetchSalesData = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      const userId = user?.id;
+
+      const { data, error } = await supabase
+        .from('sales')
+        .select('amount, price')
+        .eq('user_id', userId);
+
+      if (error) {
+        console.error('Error fetching sales data:', error);
+      } else {
+        // Calculate total earnings
+        const earnings = data.reduce((total, sale) => {
+          return total + (sale.amount * sale.price);
+        }, 0);
+        setTotalEarnings(earnings.toFixed(2)); // Store the total earnings in state
+      }
+    };
+
+    fetchSalesData();
+  }, []);
 
   return (
     <>
@@ -59,7 +86,7 @@ const EarningCard = ({ isLoading }) => {
               background: theme.palette.secondary[800],
               borderRadius: '50%',
               top: { xs: -105, sm: -85 },
-              right: { xs: -140, sm: -95 }
+              right: { xs: -140, sm: -95 },
             },
             '&:before': {
               content: '""',
@@ -70,8 +97,8 @@ const EarningCard = ({ isLoading }) => {
               borderRadius: '50%',
               top: { xs: -155, sm: -125 },
               right: { xs: -70, sm: -15 },
-              opacity: 0.5
-            }
+              opacity: 0.5,
+            },
           }}
         >
           <Box sx={{ p: 2.25 }}>
@@ -85,7 +112,7 @@ const EarningCard = ({ isLoading }) => {
                         ...theme.typography.commonAvatar,
                         ...theme.typography.largeAvatar,
                         bgcolor: 'secondary.800',
-                        mt: 1
+                        mt: 1,
                       }}
                     >
                       <img src={EarningIcon} alt="Notification" />
@@ -99,7 +126,7 @@ const EarningCard = ({ isLoading }) => {
                         ...theme.typography.mediumAvatar,
                         bgcolor: 'secondary.dark',
                         color: 'secondary.200',
-                        zIndex: 1
+                        zIndex: 1,
                       }}
                       aria-controls="menu-earning-card"
                       aria-haspopup="true"
@@ -116,11 +143,11 @@ const EarningCard = ({ isLoading }) => {
                       variant="selectedMenu"
                       anchorOrigin={{
                         vertical: 'bottom',
-                        horizontal: 'right'
+                        horizontal: 'right',
                       }}
                       transformOrigin={{
                         vertical: 'top',
-                        horizontal: 'right'
+                        horizontal: 'right',
                       }}
                     >
                       <MenuItem onClick={handleClose}>
@@ -142,7 +169,9 @@ const EarningCard = ({ isLoading }) => {
               <Grid item>
                 <Grid container alignItems="center">
                   <Grid item>
-                    <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>$500.00</Typography>
+                    <Typography sx={{ fontSize: '2.125rem', fontWeight: 500, mr: 1, mt: 1.75, mb: 0.75 }}>
+                      ${totalEarnings}
+                    </Typography>
                   </Grid>
                   <Grid item>
                     <Avatar
@@ -150,7 +179,7 @@ const EarningCard = ({ isLoading }) => {
                         cursor: 'pointer',
                         ...theme.typography.smallAvatar,
                         bgcolor: 'secondary.200',
-                        color: 'secondary.dark'
+                        color: 'secondary.dark',
                       }}
                     >
                       <ArrowUpwardIcon fontSize="inherit" sx={{ transform: 'rotate3d(1, 1, 1, 45deg)' }} />
@@ -163,7 +192,7 @@ const EarningCard = ({ isLoading }) => {
                   sx={{
                     fontSize: '1rem',
                     fontWeight: 500,
-                    color: 'secondary.200'
+                    color: 'secondary.200',
                   }}
                 >
                   Total Earning
@@ -178,7 +207,7 @@ const EarningCard = ({ isLoading }) => {
 };
 
 EarningCard.propTypes = {
-  isLoading: PropTypes.bool
+  isLoading: PropTypes.bool,
 };
 
 export default EarningCard;

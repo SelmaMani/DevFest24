@@ -39,3 +39,24 @@ def generate_income_statement_insights(query: str, incomes_statement_docs: list[
     )
 
     return chat_response.choices[0].message.content
+
+def generate_dashboard_report(query: str, data: list[str], groq_client):
+    system_message = (
+        "You are an AI assistant that analyzes financial data and provides insights about the KPI metrics. "
+        "Use the context provided below to give meaningful insights.\n\n"
+        "CONTEXT:\n"
+        "\n---\n".join(data)
+    )
+    
+    # Define the conversation messages with the system context and user query
+    messages = [
+        {"role": "system", "content": system_message},
+        {"role": "user", "content": query}
+    ]
+    
+    chat_response = groq_client.chat.completions.create(
+        model="llama3-8b-8192",  
+        messages=messages
+    )
+
+    return chat_response.choices[0].message.content

@@ -1,14 +1,25 @@
 import React, { useState } from 'react';
 import { AppBar, Toolbar, IconButton, Box, Button, Typography, Collapse } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import { useNavigate } from 'react-router-dom'; 
 
 import logo from "../../assets/logo.svg";
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate(); 
+
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
+  };
+
+  const handleLoginClick = () => {
+    navigate('/pages/login/login3'); 
+  };
+
+  const handleSignupClick = () => {
+    navigate('/pages/register/register3'); 
   };
 
   return (
@@ -20,17 +31,15 @@ function Navbar() {
             width: { xs: '100%', md: '65%' },
             margin: '0 auto',
             justifyContent: 'space-between',
-            border: { xs: 'none', md: '1px #C0C5CD solid' }, // Border only for larger screens
-            borderRadius: { xs: '0px', md: '20px' }, // Border radius only for larger screens
+            border: { xs: 'none', md: '1px #C0C5CD solid' },
+            borderRadius: { xs: '0px', md: '20px' }, 
           }}
         >
           
-          {/* Logo aligned to the extreme left */}
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
             <img src={logo} alt="logo" style={{ width: '120px' }} />
           </Typography>
 
-          {/* Centered Links for Larger Screens */}
           <Box sx={{ display: { xs: 'none', md: 'flex' }, flexGrow: 2, justifyContent: 'center', gap: '20px', alignItems: 'center', color: 'black' }}>
             <Button color="inherit">Hero</Button>
             <Button color="inherit">Features</Button>
@@ -38,13 +47,11 @@ function Navbar() {
             <Button color="inherit">Contact Us</Button>
           </Box>
 
-          {/* Login and Signup Buttons aligned to the extreme right */}
           <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: '15px', alignItems: 'center' }}>
-            <Button variant="contained" sx={{ backgroundColor: '#1E88E5', color: 'white', padding: '2px', borderRadius: '15px' }}>Signup</Button>
-            <Button sx={{ color: '#1E88E5' }}>Login</Button>
+            <Button onClick={handleSignupClick} variant="contained" sx={{ backgroundColor: '#1E88E5', color: 'white', padding: '2px', borderRadius: '15px' }}>Signup</Button>
+            <Button onClick={handleLoginClick} sx={{ color: '#1E88E5' }}>Login</Button>
           </Box>
 
-          {/* Menu Icon for Mobile */}
           <IconButton
             edge="start"
             color="inherit"
@@ -57,7 +64,6 @@ function Navbar() {
         </Toolbar>
       </AppBar>
 
-      {/* Dropdown Menu for Mobile (Appears Below the Navbar) */}
       <Collapse
         in={isOpen}
         timeout="auto"

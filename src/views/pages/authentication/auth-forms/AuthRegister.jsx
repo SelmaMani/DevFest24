@@ -46,7 +46,7 @@ const AuthRegister = ({ ...others }) => {
   const [strength, setStrength] = useState(0);
   const [level, setLevel] = useState();
 
-  const[success, setSuccess] = useState('');
+  const [success, setSuccess] = useState('');
 
   const googleHandler = async () => {
     console.error('Register with Google');
@@ -72,7 +72,7 @@ const AuthRegister = ({ ...others }) => {
 
   // Registration handler
   const handleRegister = async (values, { setSubmitting, setErrors, resetForm }) => {
-    const { email, password, fname, lname } = values;  
+    const { email, password, fname, lname } = values;
     try {
       const { error } = await supabase.auth.signUp({
         email, password, options: {
@@ -93,7 +93,7 @@ const AuthRegister = ({ ...others }) => {
 
   return (
     <>
-    {success && <div className="flex bg-green-300 border border-green-400 text-sm text-green-500">{success}</div>}
+      {success && <div className="flex py-4 px-2 rounded-lg border border-green-400 text-sm text-green-500">{success}</div>}
       <Formik
         initialValues={{
           fname: '',
@@ -105,7 +105,7 @@ const AuthRegister = ({ ...others }) => {
         validationSchema={Yup.object().shape({
           fname: Yup.string().required('First name is required'),
           lname: Yup.string().required('Last name is required'),
-          email: Yup.string().email('Must be a valid email').max(255).required('Email is required'),
+          email: Yup.string().email('Must be a valid email').required('Email is required'),
           password: Yup.string().max(255).required('Password is required'),
         })}
         onSubmit={handleRegister}
@@ -262,8 +262,8 @@ const AuthRegister = ({ ...others }) => {
                   size="large"
                   type="submit"
                   variant="contained"
-                  color="secondary"
-                >
+                  className='bg-[#1e88e5]'
+                  >
                   Sign up
                 </Button>
               </AnimateButton>

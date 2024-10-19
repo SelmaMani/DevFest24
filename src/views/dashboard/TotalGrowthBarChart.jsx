@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
 // material-ui
 import { useTheme } from '@mui/material/styles';
@@ -7,6 +7,7 @@ import Grid from '@mui/material/Grid';
 import MenuItem from '@mui/material/MenuItem';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { supabase } from '../../../supabaseClient';
 
 // third-party
 import ApexCharts from 'apexcharts';
@@ -18,28 +19,206 @@ import MainCard from 'ui-component/cards/MainCard';
 import { gridSpacing } from 'store/constant';
 
 // chart data
-import chartData from './chart-data/total-growth-bar-chart';
-
-const status = [
-  {
-    value: 'today',
-    label: 'Today'
+const initialChartData = {
+  height: 480,
+  type: 'bar',
+  options: {
+    chart: {
+      id: 'bar-chart',
+      stacked: true,
+      toolbar: {
+        show: true,
+      },
+      zoom: {
+        enabled: true,
+      },
+    },
+    responsive: [
+      {
+        breakpoint: 480,
+        options: {
+          legend: {
+            position: 'bottom',
+            offsetX: -10,
+            offsetY: 0,
+          },
+        },
+      },
+    ],
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        columnWidth: '50%',
+      },
+    },
+    xaxis: {
+      type: 'category',
+      categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+    },
+    legend: {
+      show: true,
+      fontFamily: `'Roboto', sans-serif`,
+      position: 'bottom',
+      offsetX: 20,
+      labels: {
+        useSeriesColors: false,
+      },
+      markers: {
+        width: 16,
+        height: 16,
+        radius: 5,
+      },
+      itemMargin: {
+        horizontal: 15,
+        vertical: 8,
+      },
+    },
+    fill: {
+      type: 'solid',
+    },
+    dataLabels: {
+      enabled: false,
+    },
+    grid: {
+      show: true,
+    },
   },
-  {
-    value: 'month',
-    label: 'This Month'
-  },
-  {
-    value: 'year',
-    label: 'This Year'
-  }
-];
+  series: [],
+};
 
 // ==============================|| DASHBOARD DEFAULT - TOTAL GROWTH BAR CHART ||============================== //
 
 const TotalGrowthBarChart = ({ isLoading }) => {
   const [value, setValue] = React.useState('today');
+  const [chartData, setChartData] = useState(initialChartData);
   const theme = useTheme();
+
+  const status = [
+    {
+      value: 'today',
+      label: 'Today'
+    },
+    {
+      value: 'month',
+      label: 'This Month'
+    },
+    {
+      value: 'year',
+      label: 'This Year'
+    }
+  ];
+
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      const userId = user?.id;
+
+      const { data: salesData, error: salesError } = await supabase
+        .from('sales')
+        .select('amount, price, sale_date')
+        .eq('user_id', userId);;
+
+      const { data: expensesData, error: expensesError } = await supabase
+        .from('expenses')
+        .select('amount, expense_date')
+        .eq('user_id', userId);;
+
+      const { data: investmentsData, error: investmentsError } = await supabase
+        .from('investments')
+        .select('amount, investment_date')
+        .eq('user_id', userId);
+
+      const { data: budgetData, error: budgetError } = await supabase
+        .from('budgets')
+        .select('budget_amount, start_date')
+        .eq('user_id', userId);
+
+      if (salesError || expensesError || investmentsError) {
+        console.error('Error fetching data:', salesError || expensesError || investmentsError || budgetError);
+        return;
+      }
+
+      const monthlyData = {
+        investment: new Array(12).fill(0),
+        loss: new Array(12).fill(0),
+        profit: new Array(12).fill(0),
+        maintenance: new Array(12).fill(0),
+      };
+      
+      // Calculate total sales profit
+      salesData.forEach((sale) => {
+        const month = new Date(sale.sale_date).getMonth();
+        if (!isNaN(month)) {
+          monthlyData.profit[month] += sale.amount * sale.price; // Total profit from sales
+        }
+      });
+      
+      // Calculate total expenses
+      const monthlyExpenses = new Array(12).fill(0);
+      expensesData.forEach((expense) => {
+        const month = new Date(expense.expense_date).getMonth();
+        if (!isNaN(month)) {
+          monthlyExpenses[month] += expense.amount; // Total expenses
+        }
+      });
+      
+      // Calculate loss based on budget and expenses
+      const monthlyBudget = new Array(12).fill(0);
+      budgetData.forEach((budget) => {
+        const month = new Date(budget.start_date).getMonth();
+        if (!isNaN(month)) {
+          monthlyBudget[month] += budget.budget_amount; // Total budget per month
+        }
+      });
+      
+      monthlyData.loss.forEach((_, index) => {
+        if (monthlyExpenses[index] > monthlyBudget[index]) {
+          monthlyData.loss[index] = monthlyExpenses[index] - monthlyBudget[index]; // Loss as the excess over budget
+        } else {
+          monthlyData.loss[index] = 0; // No loss if within budget
+        }
+      });
+      
+      // Calculate total investments
+      investmentsData.forEach((investment) => {
+        const month = new Date(investment.investment_date).getMonth();
+        if (!isNaN(month)) {
+          monthlyData.investment[month] += investment.amount; // Total investments
+        }
+      });
+      
+      console.log('Monthly Data:', monthlyData);
+
+      setChartData((prev) => ({
+        ...prev,
+        series: [
+          {
+            name: 'Investment',
+            data: monthlyData.investment,
+          },
+          {
+            name: 'Loss',
+            data: monthlyData.loss,
+          },
+          {
+            name: 'Profit',
+            data: monthlyData.profit,
+          },
+          {
+            name: 'Maintenance',
+            data: monthlyData.maintenance,
+          },
+        ],
+      }));
+      console.log('Chart Series:', chartData.series);
+
+    };
+
+    fetchData();
+  }, []);
 
   const { primary } = theme.palette.text;
   const divider = theme.palette.divider;
@@ -57,20 +236,20 @@ const TotalGrowthBarChart = ({ isLoading }) => {
       xaxis: {
         labels: {
           style: {
-            colors: [primary, primary, primary, primary, primary, primary, primary, primary, primary, primary, primary, primary]
-          }
-        }
+            colors: Array(12).fill(primary),
+          },
+        },
       },
       yaxis: {
         labels: {
           style: {
-            colors: [primary]
-          }
-        }
+            colors: [primary],
+          },
+        },
       },
       grid: { borderColor: divider },
       tooltip: { theme: 'light' },
-      legend: { labels: { colors: grey500 } }
+      legend: { labels: { colors: grey500 } },
     };
 
     // do not load chart when loading
@@ -94,7 +273,7 @@ const TotalGrowthBarChart = ({ isLoading }) => {
                       <Typography variant="subtitle2">Total Growth</Typography>
                     </Grid>
                     <Grid item>
-                      <Typography variant="h3">$2,324.00</Typography>
+                      <Typography variant="h3">${chartData.series.reduce((acc, cur) => acc + cur.data.reduce((a, b) => a + b, 0), 0).toFixed(2)}</Typography>
                     </Grid>
                   </Grid>
                 </Grid>
@@ -114,8 +293,8 @@ const TotalGrowthBarChart = ({ isLoading }) => {
               xs={12}
               sx={{
                 '& .apexcharts-menu.apexcharts-menu-open': {
-                  bgcolor: 'background.paper'
-                }
+                  bgcolor: 'background.paper',
+                },
               }}
             >
               <Chart {...chartData} />
@@ -128,7 +307,7 @@ const TotalGrowthBarChart = ({ isLoading }) => {
 };
 
 TotalGrowthBarChart.propTypes = {
-  isLoading: PropTypes.bool
+  isLoading: PropTypes.bool,
 };
 
 export default TotalGrowthBarChart;
