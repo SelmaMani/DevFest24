@@ -3,12 +3,14 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import groq  
 from generation import generate_balance_sheet_insights , generate_income_statement_insights , generate_dashboard_report
+from dotenv import load_dotenv
 
 
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
 
-groq_client = groq.Client(api_key="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")
+groq_api_key = os.getenv("GROQ_API_KEY")
+groq_client = groq.Client(api_key=groq_api_key)
 
 
 @app.route('/generate_insights', methods=['POST'])
