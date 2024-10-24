@@ -9,7 +9,7 @@ import jsconfigPaths from 'vite-jsconfig-paths';
 export default defineConfig({
   plugins: [react(), jsconfigPaths()],
   // https://github.com/jpuri/react-draft-wysiwyg/issues/1317
-  base: '/free',
+  base: '/',
   define: {
     global: 'window'
   },
@@ -37,9 +37,4 @@ export default defineConfig({
     // this sets a default port to 3000
     port: 3000
   },
-  build: {
-    rollupOptions: {
-      external: ['@fortawesome/fontawesome-svg-core']
-    }
-  }
 });
